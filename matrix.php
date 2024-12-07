@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tests de Rendimiento</title>
+    <title>Tests de Rendimiento - Matrices</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -14,13 +14,13 @@
                 <h2>Tests Server</h2>
             </div>
             <ul class="nav-links">
-                <li class="active">
+                <li>
                     <a href="page.php">
                         <i class="fas fa-calculator"></i>
                         <span>Cálculo de PI</span>
                     </a>
                 </li>
-                <li>
+                <li class="active">
                     <a href="matrix.php">
                         <i class="fas fa-table"></i>
                         <span>Multiplicación de Matrices</span>
@@ -43,35 +43,51 @@
 
         <main class="content">
             <div class="container">
-                <h1>Cálculo de PI</h1>
+                <h1>Multiplicación de Matrices</h1>
                 
                 <form method="GET" class="form-control">
-                    <label for="n">Número de iteraciones (n):</label>
-                    <input type="number" name="n" id="n" value="<?php echo isset($_GET['n']) ? $_GET['n'] : 1000; ?>" min="1">
+                    <label for="size">Tamaño de las matrices (NxN):</label>
+                    <input type="number" name="size" id="size" value="<?php echo isset($_GET['size']) ? $_GET['size'] : 100; ?>" min="1" max="500">
                     <button type="submit" class="btn">Calcular</button>
                 </form>
 
                 <div class="result">
                     <?php
-                    if (isset($_GET['n'])) {
+                    if (isset($_GET['size'])) {
+                        $size = $_GET['size'];
                         $start = microtime(true);
-                        $area = 0.0;
-                        $n = $_GET['n'];
-
-                        for ($i = 0; $i < $n; $i++) {
-                            $x = ($i + 0.5)/$n;
-                            $area = $area + 1.0/(1.0 + $x*$x);
+                        
+                        // Crear matrices
+                        $matrix1 = array();
+                        $matrix2 = array();
+                        $result = array();
+                        
+                        // Inicializar matrices
+                        for ($i = 0; $i < $size; $i++) {
+                            for ($j = 0; $j < $size; $j++) {
+                                $matrix1[$i][$j] = rand(1, 10);
+                                $matrix2[$i][$j] = rand(1, 10);
+                                $result[$i][$j] = 0;
+                            }
                         }
-
-                        $result = $area/$n;
+                        
+                        // Multiplicar matrices
+                        for ($i = 0; $i < $size; $i++) {
+                            for ($j = 0; $j < $size; $j++) {
+                                for ($k = 0; $k < $size; $k++) {
+                                    $result[$i][$j] += $matrix1[$i][$k] * $matrix2[$k][$j];
+                                }
+                            }
+                        }
+                        
                         $end = microtime(true);
                         $exectime = $end - $start;
 
-                        echo "<div class='pi-result'>";
+                        echo "<div class='matrix-result'>";
                         echo "<h2>Resultados</h2>";
-                        echo "<p class='pi-value'>π ≈ " . number_format($result, 8) . "</p>";
-                        echo "<p class='iterations'>Iteraciones: " . number_format($n) . "</p>";
+                        echo "<p class='matrix-size'>Tamaño de matriz: {$size}x{$size}</p>";
                         echo "<p class='exec-time'>Tiempo de ejecución: " . number_format($exectime, 6) . " segundos</p>";
+                        echo "<p class='operations'>Operaciones realizadas: " . number_format($size * $size * $size) . "</p>";
                         echo "</div>";
                     }
                     ?>
